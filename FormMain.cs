@@ -140,6 +140,8 @@ namespace HantaiDownloader {
 
                 this.ShowLog("完成下載檔案");
 
+                this.ProcessBookInfo(this.bookInfo, savePath);
+
             } catch (Exception ex) {
                 this.ShowLog(ex.Message);
                 this.ShowLog(ex.StackTrace);
@@ -337,6 +339,36 @@ namespace HantaiDownloader {
 
         }
 
+        public void ProcessBookInfo(BOOK_INFO bookInfo , string savePath) {
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendFormat("BOOK_NAME = {0}", bookInfo.eng_title);
+            builder.AppendLine();
+            builder.AppendFormat("BOOK_TITLE = {0}", bookInfo.uni_title.Trim() != "" ? bookInfo.uni_title : bookInfo.eng_title);
+            builder.AppendLine();
+            builder.AppendFormat("PAGE = {0}", bookInfo.total_page);
+            builder.AppendLine();
+            builder.AppendFormat("LANGUAGE = {0}", bookInfo.language);
+            builder.AppendLine();
+            builder.AppendFormat("UPLOAD_TIME = {0}", bookInfo.upload_time);
+            builder.AppendLine();
+
+            try {
+                this.logger.WriteTrace("寫入 Info 文字檔");
+                using (StreamWriter writer = new StreamWriter(Path.Combine(savePath, "Info.txt"))) {
+                    writer.Write(builder.ToString());
+
+                }
+
+                this.logger.WriteTrace("完成寫入 Info 文字檔");
+
+            } catch (Exception ex) {
+                this.logger.WriteError("失敗寫入 Info 文字檔");
+                this.logger.WriteError(ex.Message);
+
+            }
+
+        }
         #endregion BASE
 
         #region FUNCTION
